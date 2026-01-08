@@ -200,7 +200,7 @@ def plot_y_vs_x(df, y_num, x_num, name_col="planet_name",
             color='yellowgreen', 
             alpha=0.15,
             zorder=0,  
-            label='Zona Habitable (ZH)'
+            label='Zona Habitable Conservadora (ZHC)'
         )
    
     calc_x = lambda d: d[x_num] 
