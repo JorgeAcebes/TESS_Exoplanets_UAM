@@ -1,0 +1,171 @@
+\documentclass[11pt,a4paper]{article}
+%\documentclass[onecolumn]{aastex62}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}      % Mejora la salida de los caracteres acentuados
+\usepackage{textcomp} 
+\usepackage[spanish]{babel} 
+
+\decimalpoint 
+% Creo que queda mejor la versión con punto que con coma
+
+
+\setlength{\parskip}{9pt}
+\usepackage{graphicx}
+\AtBeginDocument{\renewcommand{\contentsname}{Índice}}
+\usepackage{changepage}
+\usepackage{subcaption}
+\usepackage{longtable} 
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage{comment}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\definecolor{new_pink}{RGB}{255,20,147} 
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=new_pink  
+}
+\setstretch{1.15}
+% Nuevos tipos de columna para centrado horizontal y vertical
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}m{#1}}
+% Nueva columna que combina centrado horizontal y vertical
+\newcolumntype{X}[1]{>{\centering\arraybackslash}m{#1}}
+%% Tamaño página y márgenes
+\usepackage[a4paper,top=1.75cm,bottom=2.0cm,left=2.0cm,right=2.0cm,marginparwidth=1.75cm]{geometry}
+%\usepackage{dcolumn}% Align table columns on decimal point
+%\usepackage{bm}% bold math
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+%\usepackage{float}
+%\usepackage{minted}
+%\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%\usepackage{titletoc}
+% \usepackage[draft]{todonotes}
+\usepackage{natbib}
+%\bibliographystyle{plainnat}
+\setcitestyle{numbers}
+% \bibliographystyle{abbrvnat}
+\bibliographystyle{apj}
+\usepackage[nottoc]{tocbibind}
+% \setcitestyle{authoryear}
+\newcommand{\Hb}{H$\beta$\xspace}
+\newcommand{\Ha}{H$\alpha$\xspace}
+\newcommand{\Hd}{H$\delta$\xspace}
+\newcommand{\OI}{$\left[\mathrm{O\,\textrm{\sc{i}}}\right]$\xspace}
+\newcommand{\SII}{$\left[\mathrm{S\,\textrm{\sc{ii}}}\right]$\xspace}
+\newcommand{\OIII}{$\left[\mathrm{O\,\textrm{\sc{iii}}}\right]$\xspace}
+\newcommand{\OII}{$\left[\mathrm{O\,\textrm{\sc{ii}}}\right]$\xspace}
+\newcommand{\NII}{$\left[\mathrm{N\,\textrm{\sc{ii}}}\right]$\xspace}
+\newcommand{\aap}{A\%A}
+\newcommand{\vgp}[1]{\textcolor{green}{VGP: #1}}
+\newcommand{\lda}[1]{\textcolor{blue}{LDA: #1}}
+\newcommand{\jda}[1]{\textcolor{red}{LPF: #1}}
+\usepackage{xspace}
+\newcommand{\msun}{$h^{-1}{\rm M}_{\odot}$\xspace}
+%\usepackage[maxbibnames=3,natbib=true]{biblatex}
+ \usepackage{gensymb}
+ \usepackage{multirow}
+
+ \usepackage{subcaption}
+\usepackage{upgreek}
+% Macros para revistas (sustituyen a las de RevTeX)
+\def\apj{ApJ}
+\def\apjl{ApJL}
+\def\mnras{MNRAS}
+\def\araa{ARA\&A}
+\def\aap{A\&A}
+\def\prl{Phys.\ Rev.\ Lett.}
+\def\prd{Phys.\ Rev.\ D}
+\def\icarus{icarus}
+\def\aj{Astrophysical Journal}
+
+
+
+
+
+\begin{document}
+\onehalfspacing
+\begin{titlepage}
+\begin{center}
+\begin{figure}[!htb]
+%\begin{minipage}{0.4\textwidth}
+\centering
+\includegraphics[width=16cm]{figuras/Logo-UAM.jpg}
+%\end{minipage}\hfill
+%\begin{minipage}{0.4\textwidth}
+%\centering         \includegraphics[width=5cm]{figuras/Logo-DFT.jpg}
+%\end{minipage}\hfill
+\end{figure}
+{\vspace{2cm}
+\textbf{\large\ GRADO EN FÍSICA}}\\
+\textbf{\large\ TÉCNICAS EXPERIMENTALES AVANZADAS}\\
+\vspace{3cm}
+\textbf{\Large\textbf{Detección de Tránsitos con TESS y Caracterización: \\De TOI-4010 al Análisis Poblacional}}\\
+\vspace{0.5cm}
+\vspace{2.5cm}
+\textbf{\large\ Jorge Acebes Hernández}\\
+\vspace{2.5cm}
+{\large\ Profesores de la Asignatura\\
+\vspace{0.5cm}
+\textbf{Dr. Gwendolyn Meeus y Dr. Miguel Ángel Sánchez Conde}}\\
+\vspace{3.5cm}
+{\large Curso académico: 2025-26}
+\end{center}
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newenvironment{acknowledgements} {\renewcommand\abstractname{Acknowledgements}\begin{abstract}} {\end{abstract}}
+%\newpage
+%\begin{acknowledgements}
+%Thanks blabla
+%\end{acknowledgements}
+%\newpage
+\pagenumbering{gobble}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\tableofcontents
+\vfill
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\pagenumbering{arabic}
+
+\input{sections/0_abstract/0_abstract}
+\input{sections/1_introduction/1_introduction}
+\input{sections/2_theory/2_theory}
+\input{sections/3_methods/3_methods}
+\input{sections/4_results/4_results}
+\input{sections/5_discussion/5_discussion}
+\input{sections/6_conclusions/6_conclusions}
+
+
+\input{sections/7_agradecimientos/7_agradecimientos}
+% \input{sections/example}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Referencias
+\newpage
+
+\bibliography{biblio}
+\begin{flushleft}
+\end{flushleft}
+
+\input{sections/8_anexo/8_anexo}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\appendix
+%\newpage
+
+%\section*{Apéndice}
+
+%\appendix
+\end{document}
+

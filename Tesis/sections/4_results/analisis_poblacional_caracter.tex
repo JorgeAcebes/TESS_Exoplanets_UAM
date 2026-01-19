@@ -1,0 +1,38 @@
+\subsection{Análisis Poblacional}
+A partir del filtrado detallado en la Sección \ref{NEA_obtain_data}, se consolida una población total de $N=339$ planetas. Como se discutió, este restricción permite evaluar la eficacia del algoritmo al eliminar ocultaciones de otros planetas e interacciones dinámicas entre estrellas. Además, dada la gran cantidad de datos, se ejecuta el pipeline diseñado sobre LCFs para mayor eficiencia computacional, en comparación con el coste de emplear TPFs, que requieren un preprocesado.
+
+El periodo escogido es aquel que presenta mayor potencia en el periodograma, $T_{\text{BLS}}$, y su error relativo\footnote{Definido en el Anexo: \ref{General_anex}} se representa en la Figura \ref{fig:eval_data} en función del periodo de referencia, $T_{\text{ref}}$, catalogado en NEA \cite{chr-25-NASA_Exoplanet_Archive}. En consonancia con \citet{TLS_aliasing}, se considera válida una detección si el error relativo no supera el 1\%. Adicionalmente, se contempla la detección de alias armónicos, mientras que se descartan aquellos planetas con periodo de referencia inferior a 0.5 días o superior a 20 días, pues se encuentran fuera del rango estipulado en nuestra búsqueda. El resto, se consideran detecciones no coincidentes.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figuras/val_period_alias.png}
+    \caption{Precisión de BLS en la recuperación del periodo, $T_{\text{BLS}}$. Se representa el error relativo $\epsilon$ frente al periodo de referencia $T_{\text{ref}}$. Clasificación de detecciones: válidas ($\epsilon \leq 0.01$),  \textit{alias} armónicos ($T_{\text{BLS}} = \tilde{\eta}\, T_{\text{ref}}$, $\tilde{\eta}\in \mathbb{Q}_+$), fuera de rango ($T_{\text{ref}} \notin [0.5, 20] \text{ días}$, excluyendo \textit{alias} armónicos) y no coincidentes. El recuadro ampliado detalla la estructura de los \textit{alias} armónicos en $\epsilon \in [0, 2.5]$.}
+    \label{fig:eval_data}
+\end{figure}
+
+De aquí en adelante, se emplean exclusivamente los datos de planetas con periodo clasificado como válido, con la intención de obtener información relevante en el análisis poblacional cualitativo. Además, pese a no cumplir los criterios de búsqueda establecidos, se incluyen en las figuras subsiguientes los planetas TOI-4010 b, c y d, facilitando la inspección visual de sus propiedades; así como los planetas del Sistema Solar, permitiendo su comparativa. 
+
+En la Figura \ref{fig_diagrama_MR} se representa un diagrama MR (masa-radio del planeta) sobre la relación MR probabilística derivada por \citet{Chen_2016_MR_diag} y la clasificación planetaria en función de la masa empleado en su estudio (\textit{terrans}, neptunianos y jovianos). Asimismo, se representan las líneas de Fe, MgSiO$_3$ y H$_2$O puras, siguiendo la parametrización de \citet{lineas_puras}, siendo esta última línea empleada para distinguir entre planetas rocosos y volátiles según establece \citet{otegi_lineas}. 
+
+Es necesario puntualizar que no todos los planetas pueden incluirse en el análisis por ausencia de datos en el archivo de NEA.
+\clearpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.86\linewidth]{figuras/Diagrama MR.png}
+    \caption{Relación masa-radio para exoplanetas detectados por TESS y planetas del Sistema Solar. Se incluye la modelización empírica de \citet{Chen_2016_MR_diag} y la distinción entre planetas rocosos y altos en volátiles de \citet{otegi_lineas}, junto con líneas de composición: $100\% \text{ Fe}$, $\text{MgSiO}_3$ y $\text{H}_2\text{O}$. Se delimitan los regímenes en función de la masa planetaria designados por \citet{Chen_2016_MR_diag}: \textit{terrans}, neptunianos y jovianos. Se destaca el exoplaneta de menor masa (TOI-1776 b) y el sistema TOI-4010.} 
+    \label{fig_diagrama_MR}
+\end{figure}
+El análisis de habitabilidad se encuentra en la Figura \ref{fig_HZ}, la cual muestra los distintos límites de la Zona Habitable (HZ), expresados en términos del flujo efectivo incidente en el planeta como función de la temperatura efectiva de la estrella, tal como vienen definidos por \citet{zona_habitable}, \cite{zona_habitable_erratum} y sobre los que se han superpuesto los datos de este estudio.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.86\linewidth]{figuras/Zona Habitable.png}
+    \caption{Temperatura estelar efectiva frente al flujo efectivo incidente para exoplanetas detectados por TESS y planetas del Sitema Solar. Se indican con línea punteada los cinco límites de la zona habitable tomados de \citet{zona_habitable}, \cite{zona_habitable_erratum} y se sombrea la zona habitable conservadora (ZHC). Se destaca el sistema TOI-4010 y los exoplanetas en la ZH (TOI-715 b) y cerca de esta (TOI-6002 b).} 
+    \label{fig_HZ}
+\end{figure}
+
+\clearpage 
+\restoregeometry

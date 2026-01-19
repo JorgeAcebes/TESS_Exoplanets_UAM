@@ -1,0 +1,99 @@
+\subsection{Análisis detallado de TOI-4010}
+\subsubsection{Datos propios}
+Tras aplicar la calibración y análisis fotométrico de la observación, se obtuvo la magnitud aparente en la banda \textit{V} para TOI-4010. Este valor se expone en la Tabla \ref{tab:mag} junto con la magnitud según \citet{SIMBAD_TOI_4010}, accedido vía SIMBAD \cite{SIMBAD}:
+
+\begin{table}[h]
+    \centering
+    \caption{Comparación de magnitudes aparentes en la banda \textit{V} para TOI-4010.} \label{tab:mag}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Parámetro} & \textbf{Experimental} & \textbf{Literatura} \cite{SIMBAD_TOI_4010}\\
+        \midrule
+        $m_V$ (\text{mag})  & $12.1 \pm 0.5$ & $12.41 \pm 0.05$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+\subsubsection{Datos de archivo}
+En esta sección se presentan los resultados del análisis de las curvas de luz provenientes de TPFs y LCFs para el objetivo TOI-4010. Pese a haberse detectado señales de tránsito periódicas correspondientes a tres planetas, se ilustra el proceso de validación utilizando TOI-4010 c, dado que presenta la mayor potencia en el periodograma y mayor SNR. El resto de gráficos están accesibles en \href{https://github.com/JorgeAcebes/TESS_Exoplanets_UAM/tree/main/Datos\%20de\%20Archivo/resultados-TOI-4010}{GitHub}.
+
+En la Figura \ref{fig:timeseries_comparison} se presentan las series temporales completas de las curvas de luz tras el procesado y el \textit{stitching}. La periodicidad de la señal se evidencia en la Figura \ref{fig:periodogram_comparison}, donde el espectro de potencia para el algoritmo BLS muestra un pico coincidentes. Por su parte, la Figura \ref{fig:transit_comparison} detalla la morfología del tránsito en la curva faseada para el periodo de máxima potencia, $T = 5.41$ días. 
+
+Los parámetros físicos determinados para los tres planetas detectados (TOI-4010 b, c y d) se recogen en la Tabla \ref{tab:parametros_TOIs_4010}, comparados con los valores de \citet{TOI_4010_paper}.
+
+
+Cabe destacar que se obvian los armónicos en el espectro de frecuencias de TOI-4010 c para poder hallar la señal de TOI-4010 b y TOI-4010 d. Por otra parte, no se incluyen en la Tabla \ref{tab:parametros_TOIs_4010} los parámetros de TOI-4010 e ya que este tiene un periodo estimado de 762 días, imposibilitando su detección con las observaciones disponibles: 5 LCFs y 10 TPFs. 
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{
+        \begin{subfigure}[b]{0.58\textwidth} 
+            \includegraphics[width=\textwidth]{figuras/TOI-4010_TPF_5.4_lightcurve_full.png}
+            \caption{Serie temporal: TPF.}
+        \end{subfigure}
+        \hfill 
+        \begin{subfigure}[b]{0.58\textwidth} 
+            \includegraphics[width=\textwidth]{figuras/TOI-4010_LCF_5.4_lightcurve_full.png}
+            \caption{Serie temporal: LCF.}
+        \end{subfigure}
+    }
+    \caption{Series temporales de flujo normalizado para el sistema TOI-4010 observadas por TESS. Los huecos en la serie corresponden a intervalos de tiempo en los que TOI-4010 no estaba en el campo de visión de TESS.}
+    \label{fig:timeseries_comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figuras/TOI-4010_TPF_5.4_periodogram.png}
+        \caption{Periodograma: TPF.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figuras/TOI-4010_LCF_5.4_periodogram.png}
+        \caption{Periodograma: LCF.}
+    \end{subfigure}
+    \caption{Periodogramas obtenidos mediante el algoritmo Box-Least Squares (BLS) para TOI-4010. La línea vertical punteada marca el periodo de máxima potencia detectado en $T = 5.41$ días, correspondiente a TOI-4010 c. La estructura de picos secundarios se debe a la señal de los otros planetas y al \textit{aliasing} armónico.}    
+    \label{fig:periodogram_comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figuras/TOI-4010_TPF_5.4_transit.png}
+        \caption{Tránsito faseado: TPF.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figuras/TOI-4010_LCF_5.4_transit.png}
+        \caption{Tránsito faseado: LCF}
+    \end{subfigure}
+    \caption{Curvas de luz faseadas para el planeta TOI-4010 c utilizando el periodo de máxima potencia detectado, $T = 5.41$ días. Los puntos grises muestran la fotometría de alta cadencia de TESS, mientras que los puntos magenta representan el flujo promediado en intervalos de 15 minutos con el fin de visualizar claramente la morfología del tránsito. En ambos métodos se aprecia una clara caída de flujo típica de una ocultación planetaria, con una mayor dispersión en la correspondiente a LCF.}
+    \label{fig:transit_comparison}
+\end{figure}
+
+
+\begin{table}[htbp]
+    \centering
+    \caption{Parámetros físicos de los tres planetas de corto periodo del sistema TOI-4010, obtenidos a partir de TPFs y LCFs, y comparados con los valores tabulados en NEA \cite{chr-25-NASA_Exoplanet_Archive}, basados en \citet{TOI_4010_paper} y denotados por Kun23.}     
+    \label{tab:parametros_TOIs_4010}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{l l c c c}
+        \toprule
+        \textbf{Parámetro} & \textbf{Origen} & \textbf{TOI-4010 b} & \textbf{TOI-4010 c} & \textbf{TOI-4010 d} \\
+        \midrule
+        \multirow{3}{*}{$R_p$ ($R_\oplus$)} 
+        & TPF & $3.15 \pm 0.21$ & $5.7 \pm 0.4$ & $5.8 \pm 0.4$ \\
+        & LCF & $3.24 \pm 0.22$ & $6.0 \pm 0.4$ & $6.0 \pm 0.4$ \\
+        & Kun23 & $3.02 ^{+ 0.08}_{-0.08}$ & $5.93^{+0.11}_{-0.12}$ & $6.18^{+0.14}_{-0.15}$ \\
+        \midrule
+        \multirow{3}{*}{$a$ (UA)} 
+        & TPF & $(2.22 \pm 0.09) \cdot 10^{-2}$ & $(5.60 \pm 0.22)\cdot 10^{-2}$ & $(1.09 \pm 0.04)\cdot 10^{-1}$ \\
+        & LCF & $(2.22 \pm 0.09) \cdot 10^{-2}$ & $(5.60 \pm 0.22)\cdot 10^{-2}$ & $(1.09 \pm 0.04)\cdot 10^{-1}$ \\
+        & Kun23 & $(2.29^{+0.02}_{-0.02}) \cdot 10^{-2}$ &$(5.8^{+0.1}_{-0.1}) \cdot 10^{-2}$  & $(1.13^{+0.01}_{-0.01}) \cdot 10^{-1}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+

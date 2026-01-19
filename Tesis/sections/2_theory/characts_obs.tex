@@ -1,0 +1,18 @@
+\subsection{TOI-4010: Características y Observación} \label{sec:experimental}
+\subsubsection{Características} \label{características}
+La estrella TOI-4010 (TIC 352682207) es una enana tipo K con una temperatura efectiva $T_{\text{eff}} = 4888 \pm 138$ K. Según los datos proporcionados por TIC en MAST \cite{MAST_collection}, posee una masa estimada $M_\star =0.799 \pm 0.097\, M_{\odot}$ y un radio $R_\star = 0.88 \pm 0.06 \, R_\odot$. El observable en estudio es su magnitud aparente en la banda \textit{V}, $m_V = 12.41 \pm 0.05 \, \text{mag}$ \citep{SIMBAD}.
+
+El sistema planetario TOI-4010 cuenta con cuatro exoplanetas conocidos. En particular, tres son de corto periodo: TOI-4010 b ($T = 1.3$ días, $M_p = 11.00 ^{+1.29}_{-1.27} \, M_\oplus$, $R_p = 3.02 ^{+0.08}_{-0.08} \, R_\oplus $),
+TOI-4010 c ($T = 5.4$ días $M_p = 20.31 ^{+2.13}_{-2.11} \, M_\oplus$, $R_p = 5.93 ^{+0.11}_{-0.12} \, R_\oplus$) y TOI-4010 d ($T = 14.7$, días, $M_p = 38.15 ^{+3.27}_{-3.22} \, M_\oplus$, $R_p = 6.18^{+0.14}_{-0.15} \, R_\oplus$); siendo TOI-4010 b subneptuniano y los otros dos subsaturnianos.
+El cuarto exoplaneta es TOI-4010 e, un superjoviano de largo periodo ($T = 762 ^{+90}_{-90}\,\text{días},\,\,M_p = 692^{+66}_{-63} \, M_\oplus$, radio desconocido) \cite{TOI_4010_paper}.
+
+\subsubsection{Observación}
+La observación independiente de TOI-4010 se produjo en el contexto de una sesión práctica de la asignatura Técnicas Experimentales Avanzadas desde el observatorio astronómico de la Universidad Autónoma de Madrid. La elección de esta estrella fue fruto de la previsión del tránsito del exoplaneta TOI-4010 d durante el desarrollo de la sesión, 6 de noviembre de 2025, con un inicio estimado del tránsito a las 20:40 UTC+1.0 \cite{ExoClock}. A pesar de ello, la detección fotométrica fue subóptima debido a diversos factores limitantes: condiciones meteorológicas ligeramente adversas y una baja elevación del objeto sobre el horizonte, aumentando el \textit{seeing}, optándose por medir la magnitud \textit{V} de la estrella exclusivamente.
+
+Al acabar la sesión, se tomaron las imágenes de calibración necesarias para la corrección de los datos brutos y así poder aislar la señal científica del ruido instrumental. Estas imágenes son las siguientes:
+
+$\bullet$ \textbf{Bias}: imagen con mínimo tiempo de exposición posible y en completa oscuridad. Su función es registrar la corriente mínima que se añade en el Conversor Analógico-Digital (ADC) para evitar un conteo negativo, así como capturar el ruido de lectura del conversor. Al ser efectos inherentes a la electrónica del dispositivo, estos afectan a todas las imágenes tomadas.
+
+$\bullet$ \textbf{Dark}: imagen tomada en completa oscuridad con la misma temperatura y tiempo de exposición que las imágenes de ciencia. En este caso, se desea caracterizar el efecto de la excitación térmica, a saber, el paso de electrones de la banda de valencia a la banda de conducción debido a su energía térmica, lo que provoca una detección de cuentas ficticia.
+
+$\bullet$ \textbf{Flat}: imagen de una fuente de iluminación uniforme. Su propósito es modelizar la respuesta no homogénea del detector, causado por variaciones en la eficiencia de los píxeles, efecto de ``viñeteo'' y suciedad en el sistema óptico.

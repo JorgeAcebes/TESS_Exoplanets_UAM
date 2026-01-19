@@ -1,0 +1,90 @@
+\subsection{\textit{Pipeline} de Detección y Caracterización para Datos de Archivo}
+El flujo de procesamiento implementado para el análisis de los datos de TESS se basa en tres etapas fundamentales: acondicionamiento de datos, búsqueda de periodicidades y obtención de parámetros físicos. Se puede encontrar el código desarrollado para tal fin en \href{https://github.com/JorgeAcebes/TESS_Exoplanets_UAM/tree/main/Datos%20de%20Archivo}{GitHub}.
+
+\subsubsection{Reducción y \textit{Stitching} de Curvas de Luz} \label{subsec:red_stitch}
+Como se explicó en la Sección \ref{subsec:MAST_TIC}, los datos fueron extraídos del archivo MAST mediante la librería \texttt{Lightkurve} \cite{Lightkurve}, priorizando \textit{Light Curve Files} procesados por SPOC y \textit{Target Pixel Files}. Para obtener la curva de luz de estos últimos se emplea una máscara de apertura definida por un umbral de $10 \sigma$. Posteriormente, se emplea una simplificación de la técnica \textit{Pixel Level Decorrelation} (PLD) \cite{PLD} para eliminar el ruido sistemático causado por las fluctuaciones del telescopio. En concreto, el método implementado consiste en lo siguiente:
+
+Se comienza modelando el ruido sistemático $m_i$ en cada instante de tiempo $t_i$ a través de una serie de potencias según:
+\begin{equation}
+    m_i = \sum_j a_j \frac{f_{ij}}{\sum_l^{N_p} f_{il}} + \sum_j\sum_k b_{jk} \frac{f_{ij} f_{ik}}{(\sum_l^{N_p} f_{il})^2 } + \cdots
+    \label{eq:noise_pld}
+\end{equation}
+tal que $f_{ij}$ es el flujo en el píxel $j$-ésimo en el instante $t_i$, $N_p$ representa el número de píxeles de la máscara de apertura y los coeficientes $\{a_j, b_{jk}, \dots\}$ ponderan la contribución de cada término. Para optimizar el modelo, se realiza un Análisis de Componentes Principales (PCA) \cite{PCA} para sintetizar el ruido en un subconjunto de vectores ortogonales. De esta manera:
+\begin{equation}
+    m_i = \sum_j ^K \omega_j \,P_{ij} + \epsilon_i,
+\end{equation}
+donde $P_{ij}$ es la componente principal $j$-ésima en el tiempo $t_i$, $\omega_j$ el peso asociado a $P_{ij}$, $K$ el número total de componentes principales (para este estudio, $K=5$) y $\epsilon_i$ el residuo en $t_i$. A continuación, se define el estadístico $\chi^2$ como:
+\begin{equation}
+    \chi^2 = \sum_i \frac{\left( y_i - \sum_j ^K \omega_j \,P_{ij}\right) ^2}{\sigma^2},
+\end{equation}
+con $y_i$ el flujo integrado observado en el instante $t_i$ y $\sigma_i$ su incertidumbre asociada. Finalmente, los pesos óptimos se obtienen resolviendo el sistema de ecuaciones que minimizan el estadístico:
+\begin{equation}
+    \frac{\partial \chi^2}{\partial w_j} = 0 \, \,\,\,  \forall \, j \in \{1, \dots, K \}.
+\end{equation}
+
+Con esto se obtiene la curva de luz, puesto que el flujo observado y corregido en cada instante $t_i$, $F_{\text{obs},i}$ y $F_{\text{cor}, i}$, están vinculados mediante:
+\begin{equation}
+    F_{\text{corr},i} = F_{\text{obs}, i} - \sum_j ^K \omega_j \,P_{ij}.
+\end{equation}
+
+Una vez se obtienen las curvas de luz para una determinada estrella y tras normalizar por la mediana, se procede a realizar el \textit{stitching}. Este proceso consiste en la unión del conjunto de curvas de luz individuales en una sola curva de luz, con el objetivo principal de aumentar la detectabilidad de señales de baja amplitud, pues la relación señal-ruido efectiva \cite{BLS} es:
+\begin{equation}
+    \alpha = \frac{\delta}{\sigma}\sqrt{nq},
+    \label{eq:SNR}
+\end{equation}
+donde $\delta$ es la profundidad del tránsito en flujo; $n$ es el número total de puntos de datos; $q$ es la relación entre la duración del tránsito y el periodo orbital; y $\sigma$ la incertidumbre asociada a los puntos, la cual se asume igual para todos ellos. Por tanto, mediante el \textit{stitching}, se aumenta $n$ y, consecuentemente, la relación señal-ruido efectiva. Asimismo, el \textit{stitching} es imperativo para la detección de exoplanetas con periodo superior a la duración de observación de un sector ($\sim27$ días), aunque en este trabajo se limita el periodo máximo de búsqueda a 20 días, escogido para poder detectar un amplio rango de periodos a la vez que se asegura que en cada observación continua de TESS se produzca, al menos, un tránsito.
+
+El último proceso de reducción consiste en un \textit{detrending} (aplanamiento), en el que se aíslan las señales de tránsito de la variabilidad estelar de baja frecuencia mediante un filtro de Savitzky–Golay \cite{flatten}. Esta técnica de procesamiento logra suavizar los datos a la par que preserva la anchura y profundidad del tránsito. A tal efecto, se define una ventana móvil de $N=2M+1$ puntos que se desplaza a lo largo de la curva de luz. La función en el intervalo $N$ se aproxima a un polinomio de grado $k$:
+\begin{equation}
+    p(\tau) = \sum_{j=0}^k \,a_j\,\tau^j, \;\;\;\; \tau\in \{-M, \dots, M\},
+\end{equation}
+y se determinan los coeficientes $\{a_j\}_j$ mediante el método de mínimos cuadrados. El nuevo valor del flujo será $p(0) = a_0$. Computacionalmente, este proceso se implementa como una convolución discreta. En el caso particular de este trabajo, se seleccionó $M=1000$ y $k=2$, asegurando una extensión temporal de la ventana significativamente mayor que la duración típica de un tránsito para minimizar la atenuación del perfil del tránsito.
+
+\subsubsection{BLS}
+El algoritmo \textit{Box Least Squares} (BLS) \cite{BLS} es el método de optimización escogido para la obtención del periodo orbital, diseñado para la detección de señales periódicas con forma de ``caja''. En particular, asume dos estados discretos: durante el tránsito (\textit{in}) y fuera del tránsito (\textit{out}). Continuando con la notación empleada en la Ecuación \eqref{eq:SNR}, la profundidad se define como $\delta$, mientras que $q = \tau/T \, \sim 0.01 - 0.05$, siendo $\tau$ la duración del tránsito y $T$ el periodo de la señal. Además, se define el tiempo de referencia $t_0$, que marca el instante central del primer tránsito. Con base en lo expuesto, el espacio de parámetros se construye sobre la red $(T, \tau, t_0) \in \mathbb{R}^3$. Para este estudio, se tienen $10^5$ posibles periodos equiespaciados entre $T_{\min}=0.5$ días y $T_{\max} = 20$ días. 
+
+Por otra parte, los puntos de datos están caracterizados por su tiempo $t_i$ y flujos $F_i$, $i \in \{ 1, \dots, n\}$; y su tiempo relativo se calcula como $t'_i = t_i - \min(t)$. Para cada periodo de prueba $T$ del espacio de parámetros, se pliega en fase la curva de luz: $\phi_i = \mathrm{wrap}(t_i', T)$, transformación equivalente a tomar los tiempos relativos $t_i$ módulo $T$, logrando que $0\leq \phi_i<T \;\, \forall i$.
+%se hace así porque la función módulo (%) puede dar problemas en algunos lenguajes de computación, blablabla.
+En búsqueda de una mayor eficiencia, se emplea el método \texttt{bls\_fast} de \texttt{astropy} \cite{astropy1,astropy2,astropy3}, que discretiza el periodo en intervalos (\textit{bins}) de ancho $\Delta b = \tau_{\min} / 10$, de tal modo que las observaciones con fases $\phi_i$ similares quedan agrupadas. Así, para el intervalo $j$, el valor de la suma de flujos pesados y la suma de pesos son:
+\begin{equation}
+     \mathcal{S}_j = \sum_{i \in \text{bin}_j} \omega_i \tilde{F}_i,  \;\;\;\;\;\;\;\; \mathcal{W}_j = \sum_{i\in \text{bin}_j} \omega_i,
+\end{equation}
+siendo el peso $\omega_i = \sigma_i^{-2}$, y $\tilde{F}_i$ el flujo respecto a la mediana, $\tilde{F}_i = F_i -\mathrm{med}(\{F_i\}_i)$. El núcleo de la eficiencia de \texttt{bls\_fast} reside en transformar estas magnitudes en sumas cumulativas:
+
+\begin{equation}
+    \mathcal{S}'_j= \sum_{m=1}^j \mathcal{S}_m, \;\;\;\;\;\;\;\; \mathcal{W}'_j = \sum_{m=1}^j \mathcal{W}_m.
+\end{equation}
+
+Adicionalmente, esta técnica discretiza el subespacio de parámetros continuo $(\tau,t_0)\in \mathbb{R}_+^2$ mediante un mapeo al subespacio $(D, \kappa) \in  \mathbb{Z}_+^2$, con $D$ las duraciones en número de \textit{bins} y $\kappa \in \{0,1,\dots, N_{\text{bins}} - D\}$ los índices de inicios de tránsito.
+
+
+De esta manera, los estimadores de máxima verosimilitud (\textit{maximum likelihood}) dentro y fuera del tránsito se calculan en tiempo constante $\mathcal{O}$(1) según:
+\begin{equation}
+    \mu_{\text{in}} = \frac{\mathcal{S}'_{\kappa+D} - \mathcal{S}'_\kappa}{\mathcal{W}_{\text{in}}}, \;\;\;\;\;\;\;\; \mu_{\text{out}} = \frac{\mathcal{S}_{\text{tot}} - (\mathcal{S}'_{\kappa+D} - \mathcal{S}'_\kappa)}{\mathcal{W}_{\text{tot}} - \mathcal{W}_{\text{in}}},
+\end{equation}
+donde $\mathcal{W}_{\text{in}} = \mathcal{W}'_{\kappa+D} - \mathcal{W}'_{\kappa}$. La bondad del ajuste para la tupla $\{D,\kappa\}$ se evalúa mediante la log-verosimilitud,
+$\log \mathcal{L}$, que bajo la hipótesis de ruido gaussiano, se simplifica a:
+\begin{equation}
+    \log\mathcal{L} \propto \frac{1}{2}\mathcal{W}_{\text{in}}\,(\mu_{\text{out}} - \mu_\text{in})^2,
+\end{equation}
+considerando la condición de tránsito, $\mu_{\text{out}}\geq \mu_{\text{in}}$. Maximizando $\log \mathcal{L}$ para cada periodo se construye el espectro de potencia o periodograma $P(T) = \max_{D,\kappa}(\log \mathcal{L})$, y la solución óptima se obtiene para el valor $T^*$ que maximiza globalmente este estadístico. A partir de la terna de parámetros óptimos $\{T^*, D^*, \kappa^*\}$ se obtienen los parámetros físicos relevantes del tránsito:
+\begin{equation}
+    \tau = D^*  \Delta b, \;\;\;\;\;\;\;\; t_0 = \left[\left(\kappa^* + \frac{D^*}{2}\right)\Delta b + \min(t) \right] \mod T^*, \;\;\;\;\;\;\;\; \delta  = \mu_{\text{out}}^*-\mu_{\text{in}}^*.
+\end{equation}
+
+Es necesario puntualizar que, debido a la morfología de la propia señal, se genera un espectro de potencia con picos espurios en los múltiplos y submúltiplos del periodo real (\textit{aliasing} armónico). La causa difiere en cada caso: para los múltiplos $\eta \, T$, se obtienen $\eta \in \mathbb{N}_+$ caídas de flujo distintas en la fase plegada, de las cuales solo una es ajustada por el algoritmo en una detección de menor intensidad; mientras que para los submúltiplos $T/\eta\; (\eta \in \mathbb{N}_+)$, los ciclos del tránsito se apilan con $\eta-1$ \textit{no}-tránsitos en la fase plegada, diluyendo la profundidad media detectada \cite{BLS, TLS_aliasing}.
+
+\subsubsection{Derivación de Parámetros Físicos} \label{subsec:Params_fisicos}
+Para determinar el radio del planeta en tránsito, $R_p$, se considera una estrella con brillo superficial uniforme, tal que el flujo total observado fuera del tránsito es proporcional al área del disco estelar, $F_{\text{out}} \propto A_\star = \pi R_\star ^2$, y que durante el tránsito el planeta bloquea un área equivalente a la de su propio disco, $A_p = \pi R_p^2$, resultando en un flujo $F_{\text{in}} \propto A_\star - A_p$. Con estas asunciones, y aplicando la definición de $\delta$, se obtiene la relación del radio con la profundidad de la siguiente manera:
+\begin{equation}
+    \delta = \frac{F_{\text{out}}-F_{\text{in}}}{F_{\text{out}}} = \frac{\pi R_\star^2 - (\pi R_\star^2 - \pi R_p ^2)}{\pi R_\star^2} = 
+    \left(\frac{R_p}{R_\star}\right)^2 \;\;\Rightarrow\;\; R_p = R_\star \sqrt{\delta}.
+    \label{delta_transit}
+\end{equation}
+
+% Si bien existen modelos analíticos más sofisticados que integran el efecto de oscurecimiento de limbo (\textit{limb darkening}) \cite{limb_darkening}, su tratamiento excede los objetivos del presente estudio.
+
+Por su parte, el semieje mayor, $a$, se calcula empleando la forma general de la tercera ley de Kepler: 
+\begin{equation}\label{eq_kepler}
+    T^2 = \frac{4\pi^2}{GM_\star}\,a^3 \;\;\Rightarrow\;\; a = \sqrt[3]{\frac{GM_\star\,T^2}{4\pi^2}}. 
+\end{equation}

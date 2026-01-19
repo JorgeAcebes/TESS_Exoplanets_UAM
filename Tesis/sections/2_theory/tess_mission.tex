@@ -1,0 +1,39 @@
+\subsection{TESS}
+\subsubsection{La misión TESS}
+La misión \textit{Transiting Exoplanet Survey Satellite} (TESS) de la NASA realiza un reconocimiento astronómico (\textit{survey}) en el espectro óptico-rojo de prácticamente la totalidad de la esfera celeste, con el fin principal de encontrar planetas transitando estrellas cercanas de alta magnitud aparente. Para ello, cuenta con cuatro cámaras de gran campo de visión que cubren individualmente un área de 24\degree $\times$ 24\degree, como se puede observar en la Figura \ref{fig-tess_cam}. Mediante su disposición vertical, es posible monitorear una franja del cielo de 24\degree $\times$ 96\degree, denominada sector, esquematizado en la Figura \ref{fig-tess_sect}. Cada sector es observado de manera continua durante aproximadamente 27 días, con una cadencia de 2 segundos \citep{NASA_TESS, MIT_TESS, TESS_paper, data_prod_tess, win-24-tess}.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\linewidth]{figuras/tess_camera_self.png}
+    \caption{Diagrama del campo de visión de TESS. Se indican los ejes de referencia de la nave, las coordenadas eclípticas y los ángulos cubiertos por las cámaras. Imagen propia.}
+    \label{fig-tess_cam}
+  \end{subfigure}\;\;
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\linewidth]{figuras/tess_obs_sectors.jpg}
+    \caption{Esquema de los sectores numerados en los que TESS divide el cielo para su observación. Se incluye la franja correspondiente a un sector y sus dimensiones. Fuente: \citep{NASA_TESS}.}
+    \label{fig-tess_sect}
+  \end{subfigure}
+  \caption{Campo de visión de TESS y división del cielo en sectores.}
+\end{figure}
+
+Estos datos de alta cadencia son integrados a bordo antes de ser enviados a Tierra, para reducir así el volumen de información. Mediante este procedimiento se obtienen los siguientes productos, que se encuentran representados en Figura \ref{fig-data_prod}: 
+
+$\bullet$ \textbf{Full-Frame Image (FFI)}: Técnicamente, es el archivo en formato FITS que contiene toda la matriz de píxeles leída simultáneamente por uno de los cuatro sensores CCD de una sola cámara, pese a también ser empleado para referirse a la imagen combinada de los cuatro sensores. Su cadencia varía entre 30 minutos, 10 minutos o 200 segundos, en función del ciclo de la misión. 
+
+$\bullet$ \textbf{Target Pixel File (TPF)}: Se trata del archivo en formato FITS de la submatriz de píxeles centrada en el objeto de interés. De nuevo, en función del ciclo de la misión pueden tener una cadencia de 2 minutos o 20 segundos. 
+
+$\bullet$ \textbf{Light Curve File (LCF)}: Son archivos FITS que contienen la información del flujo en función del tiempo. Dicho flujo es obtenido a partir de las imágenes TPFs mediante fotometría de apertura simple (SAP). Posteriormente, estas serán procesados por distintos algoritmos como el de SPOC (\textit{Science Processing Operations Center}), que se encargarán de eliminar ruido instrumental y variaciones propias de la estrella, entre otros \citep{NASA_TESS, MIT_TESS}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figuras/tess_ffi_phot.png}
+    \caption{Representación visual de los datos proporcionados por TESS: Full Frame Images, Target Pixel Files, Light Curve Files. Fuente: \citep{NASA_TESS}.}
+    \label{fig-data_prod}
+\end{figure}
+
+
+\subsubsection{MAST y TIC}\label{subsec:MAST_TIC}
+Los datos recabados por la misión TESS son almacenados y distribuidos públicamente a través del \textit{Mikulski Archive for Space Telescopes} (MAST) \cite{MAST_collection}. En este estudio fueron accedidos y analizados mediante la librería \texttt{Lightkurve} \cite{Lightkurve}; en concreto, fueron seleccionados LCFs ya procesados por el \textit{pipeline} de SPOC, así como TPFs. 
+
+Por otra parte, la misión TESS se sustenta en el \textit{TESS Input Catalog} (TIC) \cite{TIC}, basado en el catálogo de GAIA DR2 y ampliado con datos de otros catálogos a posteriori. Se trata de un catálogo de fuentes celestes luminosas en el óptico desarrollado con diversos fines: seleccionar estrellas óptimas para la generación de TPFs, proveer información estelar para la determinación de las propiedades físicas de los exoplanetas a partir de su curva de luz, y de manera más general, ser una fuente de datos astronómicos para todos aquellos cuerpos que pueden ser observados por TESS. El catálogo TIC se encuentra alojado en el archivo MAST, al que se accedió para este proyecto mediante \texttt{astroquery.mast.Catalog} \cite{astroquery}. 

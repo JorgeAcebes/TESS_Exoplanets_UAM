@@ -1,0 +1,57 @@
+\subsection{Reducción y Análisis de Datos Propios}
+El flujo de trabajo computacional para la limpieza de datos y la subsecuente ciencia fue basado en el código \texttt{data\_reduction\_photometry.ipynb} facilitado por los profesores de la asignatura. En este apartado se explicará de forma resumida su funcionamiento, aunque se puede acceder al código utilizado, \texttt{data\_red\_jorge.ipynb}, en \href{https://github.com/JorgeAcebes/TESS_Exoplanets_UAM/tree/main/Datos%20Experimentales}{GitHub}.
+
+\subsubsection{Reducción}
+El proceso de depuración construye de manera secuencial las \textit{Master Images}: \textit{Master Bias} (MB), \textit{Master Dark} (MD) y \textit{Master Flat} (MF), producto de tomar la mediana sobre los conjuntos, tal y como se muestra en las siguientes ecuaciones:
+\begin{equation}
+    MB = \text{med} (\{B_i\}_i\,),
+    \label{eq.MB}
+\end{equation}   
+\begin{equation}
+    MD_{\text{norm}} = \text{med}\left(\left\{ \frac{D_i - MB}{t_{\text{dark}}}\right\}_i\, \right),
+    \label{eq.MD}
+\end{equation}
+\begin{equation}
+    MF = \text{med}\left(\left\{
+    \frac{F_i - MB - MD_{\text{norm}}\, t_{\text{flat}}}{
+    \text{med}(F_i - MB - MD_{\text{norm}}\, t_{\text{flat}})
+    }\right\}_i \, \right),
+    \label{eq.MF}
+\end{equation}
+donde $t$ representa el tiempo de exposición de la imagen y \textit{norm} la normalización por dicho tiempo. Una vez obtenidas las \textit{Master Images}, cada imagen de ciencia, \textit{S}$_i$, se calibra mediante:
+\begin{equation}
+    S_{\text{calib},i} = \frac{S_{\text{raw},i} -MB - MD_{\text{norm}} \, t_{\text{science}}}{MF \, t_\text{science}},
+    \label{eq.science}
+\end{equation} 
+siendo \textit{raw} y \textit{calib} los indicadores de la imagen cruda y calibrada, respectivamente. 
+
+Por último, para aumentar la relación señal-ruido (SNR) de la imagen, se lleva a cabo el apilado y alineado de imágenes (\textit{stacking}) empleando la función \texttt{DAOStarFinder} para ubicar las estrellas y la función \texttt{ransac} para realizar una transformación afín sobre el conjunto de $S_{\text{calib},i}$. Tomando la mediana de todas las imágenes, se logra obtener $S_{\text{stacked}}$, la imagen de ciencia alineada y apilada. En la Figura \ref{limpieza} se encuentra un diagrama de este flujo.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figuras/diag fin.jpeg}
+    \caption{Diagrama de flujo de limpieza de datos. Las operaciones entre nodos siguen las ecuaciones \ref{eq.MB}--\ref{eq.science}. Los iconos apilados representan conjuntos de datos; los simples, imágenes individuales. Todas las imágenes corresponden a las obtenidas durante la observación; accesibles con mayor calidad en \href{https://github.com/JorgeAcebes/TESS_Exoplanets_UAM/tree/main/Datos\%20Experimentales/imgs}{GitHub}.}
+    \label{limpieza}
+\end{figure}
+
+\subsubsection{Análisis}
+La finalidad de este análisis es la medición de la magnitud aparente de TOI-4010, para lo que es necesario convertir la señal recibida por el sensor a unidades físicas, esto es, realizar la calibración en flujo.
+
+El primer paso consiste en calcular los flujos instrumentales de varias estrellas de referencia y de TOI-4010, mediante la librería \texttt{photutils}. Con dimensiones comunes a todos los cuerpos, se define una apertura circular alrededor del centroide de su función de dispersión de punto (PSF), así como una corona exterior para estimar la contribución del fondo. Integrando las cuentas correspondientes a la apertura se obtiene su flujo, $F_{\text{apertura}}$, mientras que el flujo del fondo que contribuye a la apertura surge de la relación $F_{\text{fondo}} = f_{\text{corona}} \cdot A_{\text{apertura}}$, siendo $f_{\text{corona}}$ la densidad de flujo promedio en la corona y $ A_{\text{apertura}}$ el área de la apertura.
+
+A continuación, se calcula la magnitud instrumental de cada fuente elegida, $m_{\text{inst}}$, haciendo uso de los flujos anteriores:
+\begin{equation}
+   m_{\text{inst}}  =  -2.5 \log_{10} (F_{\text{apertura}} - F_{\text{fondo}}).
+\end{equation}
+Recurriendo a las propiedades de los logaritmos, es sencillo probar que la magnitud aparente, $m$, se relaciona con la magnitud instrumental mediante una constante, $C$:
+\begin{equation}
+    m = m_{\text{inst}} + C.
+    \label{eq.m-mimst}
+\end{equation}
+Para hallar esa constante $C$ se emplea fotometría relativa, comparando las magnitudes instrumentales de las estrellas de referencia con las magnitudes obtenidas de GAIA DR3 \cite{GAIA, GAIA_2023} (transformadas al sistema Johnson) y tomando el promedio. En última instancia, recurriendo a la Ecuación \eqref{eq.m-mimst}, se consigue determinar la magnitud aparente; para este trabajo, la magnitud en \textit{V} de TOI-4010.
+
+
+
+
+
+

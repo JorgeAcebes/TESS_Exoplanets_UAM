@@ -1,0 +1,85 @@
+\clearpage
+\appendix
+\section{Cálculo de errores}
+\subsection{Datos propios}\label{anex_datos_prop}
+El cálculo del error de la magnitud \textit{V}, proveniente de la Ecuación \eqref{eq.m-mimst}, se realiza mediante propagación de errores cuadráticos:
+\begin{equation}
+    \delta m = \sqrt{(\delta m_{\text{inst}})^2 + (\delta C)^2}.
+\end{equation}
+El error en la magnitud instrumental está relacionado con el flujo de la estrella $F_{\text{estrella}} = F_{\text{apertura}}-F_{\text{fondo}}$ según:
+\begin{equation}
+    \delta m_{\text{int}} = \left|-2.5\cdot \frac{\delta F_{\text{estrella}}}{F_{\text{estrella}}}\frac{1}{{\ln(10)}} \right|,
+\end{equation}
+y para calcular el error del flujo de la estrella, recurrimos a la fórmula:
+\begin{equation}
+    \delta F_{\text{estrella}} = \sqrt{\frac{\pi}{2}}\frac{1}{\sqrt{\mathcal{N}}} \, \sqrt{\frac{F_{\text{apertura}}}{g}+\frac{F_{\text{fondo}}}{g} + \frac{n N_r^2}{g^2}}, 
+\end{equation}
+con $g$ la ganancia  de conversión, $n$ el número de píxeles de apertura, $N_r$ el ruido de lectura y el prefactor $\sqrt{\tfrac{\pi}{2}}\tfrac{1}{\sqrt{\mathcal{N}}}$ la corrección debido a haber hecho la mediana de $\mathcal{N}=6$ imágenes tras su \textit{stacking} \cite{median_factor}.
+
+Para determinar la ganancia de conversión $g$ en $e^-/$ADU, se recurre a las especificaciones técnicas del sensor ZWO ASI1600 Pro \cite{ZWO_manual}. En esta documentación se indica que la ganancia se expresa en unidades de $0.1$dB, por lo tanto, la conversión a dB es:
+\begin{equation}
+    G_{\text{dB}} = \frac{G_{\text{ZWO}}}{10},
+    \label{G_EQ}
+\end{equation}
+donde $G_{\text{ZWO}}$ representa el valor proporcionado por el encabezado (\textit{header}) de la imagen.
+Por otra parte, en \href{https://bbs.zwoastro.com/d/6154-camera-gain-values}{ZWO Astro} \cite{gain_zwo}, un moderador de la propia compañía explica que se emplea la definición de ganancia de voltaje:
+\begin{equation}
+    G_{\text{dB}} = 20 \log_{10}(A),
+    \label{A_EQ}
+\end{equation}
+siendo $A = g_0/g$ la amplificación, con $g_0$ la ganancia base en $e^-$/ADU cuando $G_{\text{dB}} = 0$. Con esto en consideración, y unificando las Ecuaciones \eqref{G_EQ} y \eqref{A_EQ}, se tiene:
+\begin{equation}
+    G_{\text{ZWO}} = 200 \log_{10} \left(\frac{g_0}{g}\right)\Rightarrow g = g_0 \cdot 10^{-\frac{G_{\text{ZWO}}}{200}}.
+\end{equation}
+Así, con una ganancia base $g_0 = 5e^-/$ADU de acuerdo con el manual y con $G_{\text{ZWO}} = 600$ en unidades de $0.1$ dB, resulta un valor:
+$$g = 5\cdot 10^{-3} \, e^-/\text{ADU}.$$
+
+El ruido de lectura se obtiene de manera más sencilla, pues siguiendo la documentación técnica \cite{ZWO_manual}, este toma un valor asintótico para valores grandes $N_r \approx 1.2 e^-$.
+
+Respecto al error en la constante $C$, dado que fue calculada a partir de una muestra pequeña de estrellas ($N=3$), se emplea la corrección de Bessel, siendo así la desviación estándar no sesgada de la muestra, $s$: 
+\begin{equation}
+    s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (C_i -C)^2},
+\end{equation}
+con $C_i$ cada uno de los valores de $C$ con los que se realizó la media. Consecuentemente, el error estándar de la media:
+\begin{equation}
+    \delta C = \frac{s}{\sqrt{N}}.
+\end{equation}
+
+
+\subsection{Datos de Archivo}
+Al igual que en la Sección \ref{anex_datos_prop}, se emplea la propagación de errores cuadráticos. Así, el error en el radio planetario es:
+\begin{equation}
+    \delta R_p = \sqrt{\left(\sqrt{\delta} \cdot \delta R_\star\right)^2 + \left(\frac{R_\star}{2\sqrt{\delta}} \cdot\Delta \delta \right) ^2} = R_p \sqrt{\left(\frac{\delta R_\star}{R_\star}\right)^2 + \left(\frac{1}{2}\frac{\Delta \delta}{\delta}\right)^2} ,
+\end{equation}
+donde $R_\star$ corresponde al radio de la estrella, y empleándose la notación $\Delta \delta$ para indicar el error en la profundidad $\delta$. Dicho error $\Delta \delta$ se halla igualando la definición de señal-ruido con la Ecuación \eqref{eq:SNR}:
+\begin{equation}
+    SNR = \frac{\delta}{\Delta \delta} = \frac{\delta}{\sigma} \sqrt{nq} \Rightarrow \Delta \delta = \frac{\sigma}{\sqrt{nq}}, 
+\end{equation}
+con $\sigma$ la desviación estándar del flujo normalizado.
+
+Finalmente, considerando $\delta T/ T\ll1$, el error en el semieje mayor $a$ se obtiene mediante:
+\begin{equation}
+    \delta a = a \left|\frac{1}{3}\frac{\delta M_\star}{M_\star}\right|.
+\end{equation}
+
+\subsection{General} \label{General_anex}
+Para comparar un valor experimental, $x_{\text{exp}}$, con el de la literatura, $x_\text{ref}$, se emplean dos métricas: la puntuación $z$ (\textit{$z$-score}) y el error relativo.
+
+La puntuación $z$ indica el número de desviaciones típicas de la medida frente al valor tabulado y surge de la relación:
+\begin{equation}
+    z = \frac{|x_{\text{exp}} - x_{\text{ref}}|}{\sqrt{\sigma_{\text{exp}}^2 + \sigma_{\text{ref}}^2}},
+\end{equation}
+donde $\sigma_{\text{exp}}^2$ y $\sigma_{\text{ref}}^2$ representan las incertidumbres experimentales y de la literatura, respectivamente. 
+
+El error relativo se calcula mediante la expresión:
+\begin{equation}
+    \epsilon_{\text{rel}} = \frac{|x_{\text{ref}}-x_{\text{exp}}|}{x_{\text{ref}}}.
+\end{equation}
+
+Por último, la incertidumbre relativa en la medida se define como:
+\begin{equation}
+    u_r = \frac{\sigma_{\text{ref}}}{x_{\text{ref}}}.
+\end{equation}
+
+
+
